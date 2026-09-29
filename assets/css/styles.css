@@ -504,6 +504,76 @@ footer { padding: 58px 0 30px; background: #050c12; }
   .table { display: block; overflow-x: auto; }
 }
 
+/* Error 404 */
+.error-page { min-height: 100vh; }
+.error-main {
+  position: relative;
+  display: grid;
+  min-height: calc(100vh - 72px - 96px);
+  overflow: hidden;
+  place-items: center;
+  padding: 76px 0;
+  background-image: linear-gradient(rgba(41, 79, 102, .11) 1px, transparent 1px), linear-gradient(90deg, rgba(41, 79, 102, .11) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.error-glow { position: absolute; top: 50%; left: 68%; width: 680px; height: 680px; background: radial-gradient(circle, rgba(39, 169, 255, .12), transparent 66%); pointer-events: none; transform: translate(-50%, -50%); }
+.error-layout { position: relative; display: grid; align-items: center; gap: 80px; grid-template-columns: 1fr .9fr; }
+.error-copy, .error-diagram { animation: riseIn .58s ease-out both; }
+.error-diagram { animation-delay: .08s; }
+.error-code { margin: 8px 0 -20px; color: rgba(39, 169, 255, .12); font: 900 clamp(110px, 15vw, 190px)/1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: -.1em; }
+.error-copy h1 { max-width: 620px; margin: 0 0 20px; font-size: clamp(40px, 5vw, 64px); letter-spacing: -.055em; line-height: 1.04; }
+.error-lead { max-width: 620px; margin: 0; color: #afc2cd; font-size: 18px; }
+.error-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.error-help { margin: 24px 0 0; color: #8299a7; font-size: 14px; }
+.error-help a { color: var(--blue); font-weight: 700; }
+.error-help a:hover { text-decoration: underline; }
+.error-diagram { padding: 26px; border: 1px solid #27465a; border-radius: 10px; background: linear-gradient(145deg, #0d1b26, #09131b); box-shadow: 0 30px 70px rgba(0, 0, 0, .32); }
+.error-diagram-head { display: flex; justify-content: space-between; gap: 20px; color: #6d8798; font: 11px ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .1em; }
+.error-status { color: #ff8c78; }
+.error-status i { display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: #ff725c; box-shadow: 0 0 12px rgba(255, 114, 92, .7); }
+.error-circuit { display: grid; align-items: center; grid-template-columns: 84px 1fr 54px 1fr 84px; margin: 72px 0; }
+.error-node { padding: 12px 6px; border: 1px solid #3d6379; border-radius: 4px; background: #102633; font: 700 11px ui-monospace, SFMono-Regular, Consolas, monospace; text-align: center; }
+.error-node small { display: block; margin-top: 2px; color: #7892a2; font-size: 9px; font-weight: 400; }
+.error-node-off { border-color: #34434c; color: #71838d; }
+.error-wire { height: 1px; background: #34434c; }
+.error-wire-live { background: var(--blue); box-shadow: 0 0 8px rgba(39, 169, 255, .6); }
+.error-break { position: relative; height: 54px; }
+.error-break span { position: absolute; top: 8px; left: 7px; width: 38px; height: 1px; background: #ff725c; transform: rotate(-26deg); transform-origin: left; }
+.error-break::before, .error-break::after { position: absolute; top: 25px; width: 6px; height: 6px; border-radius: 50%; background: #ff725c; content: ""; }
+.error-break::before { left: 0; }
+.error-break::after { right: 0; background: #52636d; }
+.error-break b { position: absolute; right: 20px; bottom: -12px; color: #ff8c78; font: 700 15px ui-monospace, SFMono-Regular, Consolas, monospace; }
+.error-readout { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; padding-top: 20px; border-top: 1px solid var(--line); }
+.error-readout div { padding-left: 11px; border-left: 2px solid var(--amber); }
+.error-readout span, .error-readout strong { display: block; }
+.error-readout span { color: #7892a2; font-size: 11px; }
+.error-readout strong { font: 700 14px ui-monospace, SFMono-Regular, Consolas, monospace; }
+.error-diagram > p { margin: 22px 0 0; color: #7892a2; font-size: 12px; }
+.error-footer { padding: 0; }
+.error-footer .legal { margin-top: 0; padding: 26px 0; }
+.error-footer .legal a { color: #8197a4; }
+.error-footer .legal a:hover { color: #fff; }
+
+@media (max-width: 900px) {
+  .error-main { padding: 62px 0; }
+  .error-layout { gap: 48px; grid-template-columns: 1fr; }
+  .error-code { font-size: 120px; }
+  .error-diagram { max-width: 620px; }
+}
+
+@media (max-width: 620px) {
+  .error-main { min-height: calc(100vh - 64px); padding: 48px 0; }
+  .error-code { margin-bottom: -10px; font-size: 92px; }
+  .error-copy h1 { font-size: 40px; }
+  .error-lead { font-size: 16px; }
+  .error-actions .btn { width: 100%; }
+  .error-diagram { padding: 20px; }
+  .error-diagram-head { display: grid; gap: 6px; }
+  .error-circuit { grid-template-columns: 66px 1fr 44px 1fr 66px; margin: 52px 0; }
+  .error-node { padding: 10px 3px; font-size: 9px; }
+  .error-footer { display: none; }
+}
+
 /* Shared shell for imported tool pages */
 body.external-tool-page {
   opacity: 0;
