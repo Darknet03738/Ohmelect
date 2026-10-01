@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cálculos eléctricos básicos y conversores técnicos de Sparkcalc.">
+  <title>Cálculos básicos - Sparkcalc</title>
+  <link rel="icon" href="../assets/img/logos.jpg">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20260930-circle-v3">
+</head>
+<body class="calculations-page">
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"><img src="../assets/img/logos.jpg" alt=""></span><span>SPARKCALC</span></a>
+      <nav class="links" aria-label="Navegación principal"><a href="../index.html">Inicio</a><a href="herramientas.html">Herramientas</a><a href="planes.html">Planes</a><a href="soporte.html">Soporte</a></nav>
+      <div class="actions"><a class="btn" href="login.html">Iniciar sesión</a><a class="btn primary" href="registro.html">Registrarse</a></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <div class="eyebrow">Biblioteca de consulta</div>
+        <h1>Cálculos básicos y conversiones.</h1>
+        <p>Herramientas independientes para resolver operaciones frecuentes de electricidad e ingeniería sin mezclar los flujos de proyecto.</p>
+      </div>
+    </section>
+
+    <nav class="calc-index" aria-label="Índice de calculadoras">
+      <div class="wrap"><a href="#circulo-electrico">Ohm y potencia</a><a href="#unidades">Unidades</a><a href="#conductores">Conductores</a><a href="#factor-potencia">Factor de potencia</a></div>
+    </nav>
+
+    <section class="calc-library">
+      <div class="wrap calc-library-grid">
+        <article class="calc-tool-card calc-tool-wide electric-wheel-card" id="circulo-electrico">
+          <div class="calc-tool-heading"><span class="icon">Ω</span><div><div class="eyebrow">Electricidad básica · CC y CA</div><h2>Círculo de Ohm y potencia</h2></div></div>
+          <p>Selecciona en el círculo la magnitud que quieres hallar; luego escoge la fórmula según los datos disponibles.</p>
+          <div class="electric-wheel-layout">
+            <div class="formula-wheel" role="group" aria-label="Seleccionar magnitud a calcular">
+              <button type="button" class="wheel-segment wheel-p" data-ohm-target="P"><strong>P</strong><span>Potencia</span><small>P = V × I<br>P = V² / R<br>P = I² × R</small></button>
+              <button type="button" class="wheel-segment wheel-v" data-ohm-target="V"><strong>V</strong><span>Tensión</span><small>V = I × R<br>V = P / I<br>V = √(P × R)</small></button>
+              <button type="button" class="wheel-segment wheel-i active" data-ohm-target="I"><strong>I</strong><span>Corriente</span><small>I = V / R<br>I = P / V<br>I = √(P / R)</small></button>
+              <button type="button" class="wheel-segment wheel-r" data-ohm-target="R"><strong>R</strong><span>Resistencia</span><small>R = V / I<br>R = V² / P<br>R = P / I²</small></button>
+              <div class="wheel-center">Ω/W<br><small>Selecciona</small></div>
+            </div>
+            <div class="wheel-form">
+              <select id="ohmTarget" class="sr-only" aria-label="Magnitud seleccionada"><option value="V">Tensión</option><option value="I" selected>Corriente</option><option value="R">Resistencia</option><option value="P">Potencia</option></select>
+              <div class="field"><label for="ohmSystem">Tipo de sistema</label><select id="ohmSystem"><option value="dc">CC / circuito resistivo</option><option value="single">CA monofásico</option><option value="three">CA trifásico</option></select><small class="field-note">La rueda conserva las 12 relaciones resistivas. En CA se añade la fórmula correspondiente con cosφ.</small></div>
+              <div class="field"><label for="ohmMethod">Fórmula y datos conocidos</label><select id="ohmMethod"></select></div>
+              <div class="field-row quick-field"><div class="field"><label id="ohmLabelA" for="ohmValueA">Tensión (V)</label><input id="ohmValueA" type="number" value="120"></div><div class="field"><label id="ohmLabelB" for="ohmValueB">Resistencia (Ω)</label><input id="ohmValueB" type="number" value="24"></div></div>
+              <div class="field quick-field" id="ohmFieldC" hidden><label id="ohmLabelC" for="ohmValueC">Factor de potencia</label><input id="ohmValueC" type="number" value="0.9" step="0.01"></div>
+              <div class="result result-stack"><span id="ohmResultLabel">Corriente calculada</span><strong id="ohmResult">5 A</strong><small id="ohmFormula">I = V / R</small></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="calc-tool-card calc-tool-wide" id="unidades">
+          <div class="calc-tool-heading"><span class="icon">⇄</span><div><div class="eyebrow">Electricidad e ingeniería</div><h2>Conversor de unidades</h2></div></div>
+          <p>Convierte magnitudes eléctricas, de puesta a tierra, iluminación, motores, mecánica e ingeniería general.</p>
+          <div class="converter-layout">
+            <div class="field"><label for="unitQuantity">Magnitud</label><select id="unitQuantity">
+              <optgroup label="Electricidad"><option value="voltage">Tensión</option><option value="current">Corriente</option><option value="resistance">Resistencia e impedancia</option><option value="conductance">Conductancia</option><option value="power">Potencia activa</option><option value="reactivePower">Potencia reactiva</option><option value="apparentPower">Potencia aparente</option><option value="energy">Energía</option><option value="charge">Carga eléctrica</option><option value="capacitance">Capacitancia</option><option value="inductance">Inductancia</option><option value="frequency">Frecuencia</option></optgroup>
+              <optgroup label="Puesta a tierra"><option value="resistivity">Resistividad</option><option value="conductivity">Conductividad</option><option value="electricField">Campo eléctrico</option></optgroup>
+              <optgroup label="Iluminación"><option value="illuminance">Iluminancia</option><option value="luminousFlux">Flujo luminoso</option><option value="luminousIntensity">Intensidad luminosa</option><option value="luminance">Luminancia</option></optgroup>
+              <optgroup label="Motores y mecánica"><option value="torque">Par motor</option><option value="speed">Velocidad angular</option><option value="force">Fuerza</option><option value="pressure">Presión</option></optgroup>
+              <optgroup label="Ingeniería general"><option value="length">Longitud</option><option value="area">Área</option><option value="volume">Volumen</option><option value="mass">Masa</option><option value="temperature">Temperatura</option><option value="angle">Ángulo</option><option value="time">Tiempo</option></optgroup>
+            </select></div>
+            <div class="field"><label for="unitValue">Valor</label><input id="unitValue" type="number" value="1"></div>
+            <div class="field"><label for="unitFrom">Desde</label><select id="unitFrom"></select></div>
+            <div class="field"><label for="unitTo">Convertir a</label><select id="unitTo"></select></div>
+          </div>
+          <div class="result"><span>Resultado</span><strong id="unitResult">1.000 mV</strong></div>
+        </article>
+
+        <article class="calc-tool-card" id="conductores">
+          <div class="calc-tool-heading"><span class="icon">▤</span><div><div class="eyebrow">Estimación preliminar</div><h2>Conductores</h2></div></div>
+          <p>Estima el calibre mínimo por ampacidad y una caída de tensión máxima del 3%.</p>
+          <div class="field-row"><div class="field"><label for="conductorCurrent">Corriente (A)</label><input id="conductorCurrent" type="number" value="40" min="0"></div><div class="field"><label for="conductorLength">Longitud (m)</label><input id="conductorLength" type="number" value="30" min="0"></div><div class="field"><label for="conductorVoltage">Tensión (V)</label><input id="conductorVoltage" type="number" value="220" min="1"></div><div class="field"><label for="conductorMaterial">Material</label><select id="conductorMaterial"><option value="cu">Cobre</option><option value="al">Aluminio</option></select></div></div>
+          <div class="field quick-field"><label for="conductorSystem">Sistema</label><select id="conductorSystem"><option value="single">Monofásico</option><option value="three">Trifásico</option></select></div>
+          <div class="result result-stack"><span>Calibre mínimo estimado</span><strong id="conductorResult">8 AWG Cu</strong><small id="conductorDetail">Ampacidad 50 A · ΔV 1,12%</small></div>
+        </article>
+
+        <article class="calc-tool-card" id="factor-potencia">
+          <div class="calc-tool-heading"><span class="icon">cosφ</span><div><div class="eyebrow">Compensación reactiva</div><h2>Factor de potencia</h2></div></div>
+          <p>Estima el banco de capacitores necesario para alcanzar el factor de potencia objetivo.</p>
+          <div class="field"><label for="pfPower">Potencia activa (kW)</label><input id="pfPower" type="number" value="100" min="0"></div>
+          <div class="field-row quick-field"><div class="field"><label for="pfInitial">FP actual</label><input id="pfInitial" type="number" value="0.8" min="0.01" max="1" step="0.01"></div><div class="field"><label for="pfTarget">FP objetivo</label><input id="pfTarget" type="number" value="0.95" min="0.01" max="1" step="0.01"></div></div>
+          <div class="result result-stack"><span>Compensación requerida</span><strong id="pfResult">42,13 kVAr</strong><small id="pfDetail">De 0,80 a 0,95</small></div>
+        </article>
+      </div>
+      <div class="wrap calc-warning"><strong>Importante:</strong> los resultados son orientativos. Verifica conductores, protecciones y condiciones de instalación con RETIE, NTC 2050 y la normativa aplicable.</div>
+    </section>
+  </main>
+
+  <footer><div class="wrap"><div class="foot"><div><a class="brand" href="../index.html"><span class="mark" aria-hidden="true"><img src="../assets/img/logos.jpg" alt=""></span><span>SPARKCALC</span></a><p>Herramientas digitales para diseñar con criterio, documentar con claridad y ejecutar con confianza.</p></div><div><h4>Plataforma</h4><a href="herramientas.html">Herramientas</a><a href="planes.html">Planes</a><a href="soporte.html">Centro de ayuda</a></div><div><h4>Normativa</h4><a href="normativa.html">RETIE y NTC 2050</a><a href="normativa.html#iec-ieee">IEC / IEEE</a></div><div><h4>Legal y contacto</h4><a href="legal.html">Términos de uso</a><a href="mailto:soporte@sparkcalc.co">soporte@sparkcalc.co</a></div></div><div class="legal"><span>© 2026 Sparkcalc.</span><span>Valida los resultados con un profesional competente.</span></div></div></footer>
+  <script src="../assets/js/main.js?v=20260930-circle-v3" defer></script>
+</body>
+</html>

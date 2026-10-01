@@ -6,7 +6,7 @@
   <meta name="description" content="Cálculo, análisis y gestión de proyectos eléctricos en una sola plataforma.">
   <title>Sparkcalc - Ingeniería eléctrica conectada</title>
   <link rel="icon" href="assets/img/logos.jpg">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260913-external-tools">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260930-calculator-layout">
 </head>
 <body>
   <header class="site-header">
@@ -30,51 +30,131 @@
 
   <button class="quick-trigger" id="quickOpen" type="button" aria-controls="quickPanel" aria-expanded="false">
     <span class="bolt" aria-hidden="true">ϟ</span>
-    <span class="label">Cálculos rápidos</span>
+    <span class="label">Calculadora</span>
   </button>
   <div class="quick-backdrop" id="quickBackdrop"></div>
 
-  <aside class="quick-panel" id="quickPanel" aria-hidden="true" aria-label="Cálculos rápidos y convertidores">
+  <aside class="quick-panel" id="quickPanel" aria-hidden="true" aria-label="Calculadora científica">
     <div class="quick-head">
       <div>
         <div class="eyebrow">Disponible en todo momento</div>
-        <h2>Cálculos rápidos</h2>
-        <p>Consulta, convierte y vuelve a tu trabajo sin perder el contexto.</p>
+        <h2>Calculadora científica</h2>
+        <p>Resuelve expresiones sin salir de la página.</p>
       </div>
       <button class="close" id="quickClose" type="button" aria-label="Cerrar panel">×</button>
     </div>
 
-    <div class="quick-groups" aria-label="Categorías de cálculo">
-      <button class="quick-link active" type="button">Ω Ley de Ohm</button>
-      <button class="quick-link" type="button">W Ley de Potencia</button>
-      <button class="quick-link" type="button">⇄ Convertir unidades</button>
-      <button class="quick-link" type="button">▤ Conductores</button>
-      <button class="quick-link" type="button">△ Trifásicos</button>
-      <button class="quick-link" type="button">cosφ Factor de potencia</button>
+    <div class="quick-groups" aria-label="Categorías de cálculo" hidden>
+      <button class="quick-link active" type="button" data-calc="ohm" aria-pressed="true">Ω Ley de Ohm</button>
+      <button class="quick-link" type="button" data-calc="power" aria-pressed="false">W Ley de Potencia</button>
+      <button class="quick-link" type="button" data-calc="units" aria-pressed="false">⇄ Convertir unidades</button>
+      <button class="quick-link" type="button" data-calc="conductors" aria-pressed="false">▤ Conductores</button>
+      <button class="quick-link" type="button" data-calc="power-factor" aria-pressed="false">cosφ Factor de potencia</button>
+      <button class="quick-link" type="button" data-calc="scientific" aria-pressed="false">ƒ(x) Científica</button>
     </div>
 
-    <div class="mini-calc">
+    <div class="mini-calc quick-calc" data-calc-panel="ohm" hidden>
       <h3>Ley de Ohm</h3>
-      <p>Introduce tensión y resistencia para calcular la corriente.</p>
+      <p>Elige qué magnitud calcular y cuáles dos valores conoces.</p>
       <div class="field-row">
-        <div class="field">
-          <label for="voltage">Tensión (V)</label>
-          <input id="voltage" type="number" value="120" min="0" inputmode="decimal">
-        </div>
-        <div class="field">
-          <label for="resistance">Resistencia (Ω)</label>
-          <input id="resistance" type="number" value="24" min="0.001" inputmode="decimal">
-        </div>
+        <div class="field"><label for="ohmTarget">Calcular</label><select id="ohmTarget"><option value="V">Tensión (V)</option><option value="I" selected>Corriente (I)</option><option value="R">Resistencia (R)</option><option value="P">Potencia (P)</option></select></div>
+        <div class="field"><label for="ohmMethod">Datos conocidos</label><select id="ohmMethod"></select></div>
       </div>
-      <div class="result">
-        <span>Corriente calculada</span>
-        <strong id="current">5.00 A</strong>
+      <div class="field-row quick-field">
+        <div class="field"><label id="ohmLabelA" for="ohmValueA">Tensión (V)</label><input id="ohmValueA" type="number" value="120" inputmode="decimal"></div>
+        <div class="field"><label id="ohmLabelB" for="ohmValueB">Resistencia (Ω)</label><input id="ohmValueB" type="number" value="24" inputmode="decimal"></div>
       </div>
+      <div class="result result-stack"><span id="ohmResultLabel">Corriente calculada</span><strong id="ohmResult">5 A</strong><small id="ohmFormula">I = V / R</small></div>
     </div>
 
-    <p class="panel-note">
-      Los cálculos rápidos son auxiliares y no modifican los datos del módulo activo hasta que el usuario elija "Usar resultado".
-    </p>
+    <div class="mini-calc quick-calc" data-calc-panel="power" hidden>
+      <h3>Ley de Potencia</h3>
+      <p>Calcula potencia, tensión, corriente o factor de potencia según el sistema.</p>
+      <div class="field-row">
+        <div class="field"><label for="powerSystem">Sistema</label><select id="powerSystem"><option value="dc">Corriente continua</option><option value="single" selected>Monofásico CA</option><option value="three">Trifásico CA</option></select></div>
+        <div class="field"><label for="powerTarget">Calcular</label><select id="powerTarget"><option value="P" selected>Potencia activa</option><option value="V">Tensión</option><option value="I">Corriente</option><option value="PF">Factor de potencia</option></select></div>
+      </div>
+      <div class="field-row quick-field">
+        <div class="field"><label id="powerLabelA" for="powerValueA">Tensión (V)</label><input id="powerValueA" type="number" value="220"></div>
+        <div class="field"><label id="powerLabelB" for="powerValueB">Corriente (A)</label><input id="powerValueB" type="number" value="10"></div>
+      </div>
+      <div class="field quick-field" id="powerPfField"><label id="powerPfLabel" for="powerPf">Factor de potencia</label><input id="powerPf" type="number" value="0.9" min="0.01" max="1" step="0.01"></div>
+      <div class="result result-stack"><span id="powerResultLabel">Potencia activa</span><strong id="powerResult">1,98 kW</strong><small id="powerDetail">2,20 kVA · 0,96 kVAr</small></div>
+    </div>
+
+    <div class="mini-calc quick-calc" data-calc-panel="units" hidden>
+      <h3>Convertir unidades</h3>
+      <p>Convierte magnitudes eléctricas entre sus unidades más usadas.</p>
+      <div class="field"><label for="unitQuantity">Magnitud</label><select id="unitQuantity">
+        <optgroup label="Electricidad"><option value="voltage">Tensión</option><option value="current">Corriente</option><option value="resistance">Resistencia e impedancia</option><option value="conductance">Conductancia</option><option value="power">Potencia activa</option><option value="reactivePower">Potencia reactiva</option><option value="apparentPower">Potencia aparente</option><option value="energy">Energía</option><option value="charge">Carga eléctrica</option><option value="capacitance">Capacitancia</option><option value="inductance">Inductancia</option><option value="frequency">Frecuencia</option></optgroup>
+        <optgroup label="Puesta a tierra"><option value="resistivity">Resistividad</option><option value="conductivity">Conductividad</option><option value="electricField">Campo eléctrico</option></optgroup>
+        <optgroup label="Iluminación"><option value="illuminance">Iluminancia</option><option value="luminousFlux">Flujo luminoso</option><option value="luminousIntensity">Intensidad luminosa</option><option value="luminance">Luminancia</option></optgroup>
+        <optgroup label="Motores y mecánica"><option value="torque">Par motor</option><option value="speed">Velocidad angular</option><option value="force">Fuerza</option><option value="pressure">Presión</option></optgroup>
+        <optgroup label="Ingeniería general"><option value="length">Longitud</option><option value="area">Área</option><option value="volume">Volumen</option><option value="mass">Masa</option><option value="temperature">Temperatura</option><option value="angle">Ángulo</option><option value="time">Tiempo</option></optgroup>
+      </select></div>
+      <div class="field-row quick-field">
+        <div class="field"><label for="unitValue">Valor</label><input id="unitValue" type="number" value="1" inputmode="decimal"></div>
+        <div class="field"><label for="unitFrom">Desde</label><select id="unitFrom"></select></div>
+      </div>
+      <div class="field quick-field"><label for="unitTo">Convertir a</label><select id="unitTo"></select></div>
+      <div class="result"><span>Resultado</span><strong id="unitResult">1.000 W</strong></div>
+    </div>
+
+    <div class="mini-calc quick-calc" data-calc-panel="conductors" hidden>
+      <h3>Selección preliminar de conductor</h3>
+      <p>Estima calibre por ampacidad y caída de tensión máxima del 3%.</p>
+      <div class="field-row">
+        <div class="field"><label for="conductorCurrent">Corriente (A)</label><input id="conductorCurrent" type="number" value="40" min="0"></div>
+        <div class="field"><label for="conductorLength">Longitud (m)</label><input id="conductorLength" type="number" value="30" min="0"></div>
+        <div class="field"><label for="conductorVoltage">Tensión (V)</label><input id="conductorVoltage" type="number" value="220" min="1"></div>
+        <div class="field"><label for="conductorMaterial">Material</label><select id="conductorMaterial"><option value="cu">Cobre</option><option value="al">Aluminio</option></select></div>
+      </div>
+      <div class="field quick-field"><label for="conductorSystem">Sistema</label><select id="conductorSystem"><option value="single">Monofásico</option><option value="three">Trifásico</option></select></div>
+      <div class="result result-stack"><span>Calibre mínimo estimado</span><strong id="conductorResult">8 AWG Cu</strong><small id="conductorDetail">Ampacidad 50 A · ΔV 1,12%</small></div>
+    </div>
+
+    <div class="mini-calc quick-calc" data-calc-panel="power-factor" hidden>
+      <h3>Corrección del factor de potencia</h3>
+      <p>Estima el banco de capacitores requerido para una carga.</p>
+      <div class="field"><label for="pfPower">Potencia activa (kW)</label><input id="pfPower" type="number" value="100" min="0"></div>
+      <div class="field-row quick-field">
+        <div class="field"><label for="pfInitial">FP actual</label><input id="pfInitial" type="number" value="0.8" min="0.01" max="1" step="0.01"></div>
+        <div class="field"><label for="pfTarget">FP objetivo</label><input id="pfTarget" type="number" value="0.95" min="0.01" max="1" step="0.01"></div>
+      </div>
+      <div class="result result-stack"><span>Compensación requerida</span><strong id="pfResult">42,13 kVAr</strong><small id="pfDetail">De 0,80 a 0,95</small></div>
+    </div>
+
+    <div class="mini-calc quick-calc active" data-calc-panel="scientific">
+      <div class="scientific-head">
+        <div><h3>Calculadora científica</h3><p>Escribe una expresión o utiliza el teclado.</p></div>
+        <button class="angle-mode" id="angleMode" type="button" aria-label="Cambiar unidad angular">DEG</button>
+      </div>
+      <label class="sr-only" for="scientificExpression">Expresión matemática</label>
+      <input class="scientific-display" id="scientificExpression" type="text" value="" placeholder="Ejemplo: sin(30) + sqrt(16)" autocomplete="off" spellcheck="false">
+      <output class="scientific-result" id="scientificResult" for="scientificExpression" aria-live="polite">0</output>
+      <div class="scientific-keys" aria-label="Teclado de calculadora científica">
+        <button type="button" data-sci-action="clear" class="key-action">AC</button>
+        <button type="button" data-sci-action="backspace" class="key-action" aria-label="Borrar último carácter">⌫</button>
+        <button type="button" data-sci-value="(">(</button><button type="button" data-sci-value=")">)</button>
+        <button type="button" data-sci-value="sin(">sin</button><button type="button" data-sci-value="cos(">cos</button>
+        <button type="button" data-sci-value="tan(">tan</button><button type="button" data-sci-value="sqrt(">√</button>
+        <button type="button" data-sci-value="asin(">sin⁻¹</button><button type="button" data-sci-value="acos(">cos⁻¹</button>
+        <button type="button" data-sci-value="atan(">tan⁻¹</button><button type="button" data-sci-value="abs(">|x|</button>
+        <button type="button" data-sci-value="log(">log</button><button type="button" data-sci-value="ln(">ln</button>
+        <button type="button" data-sci-value="pi">π</button><button type="button" data-sci-value="^">xʸ</button>
+        <button type="button" data-sci-value="7">7</button><button type="button" data-sci-value="8">8</button>
+        <button type="button" data-sci-value="9">9</button><button type="button" data-sci-value="/">÷</button>
+        <button type="button" data-sci-value="4">4</button><button type="button" data-sci-value="5">5</button>
+        <button type="button" data-sci-value="6">6</button><button type="button" data-sci-value="*">×</button>
+        <button type="button" data-sci-value="1">1</button><button type="button" data-sci-value="2">2</button>
+        <button type="button" data-sci-value="3">3</button><button type="button" data-sci-value="-">−</button>
+        <button type="button" data-sci-value="0">0</button><button type="button" data-sci-value=".">.</button>
+        <button type="button" data-sci-action="calculate" class="key-equals">=</button><button type="button" data-sci-value="+">+</button>
+      </div>
+      <p class="scientific-help">Funciones: sin, cos, tan, asin, acos, atan, sqrt, log, ln y abs. Constantes: pi y e.</p>
+    </div>
+
+    <p class="panel-note">¿Necesitas cálculos eléctricos o conversiones? <a class="muted-link" href="pages/calculos-basicos.html">Abrir la página de cálculos básicos →</a></p>
   </aside>
 
   <main>
@@ -142,9 +222,15 @@
         </div>
         <div class="grid">
           <article class="card">
+            <div class="card-top"><span class="icon">Ω</span><span class="tag free">Gratis</span></div>
+            <h3>Cálculos básicos y conversiones</h3>
+            <p>Ley de Ohm, potencia CC/CA, conductores, factor de potencia y conversión de unidades técnicas.</p>
+            <a href="pages/calculos-basicos.html">Abrir herramientas <span>→</span></a>
+          </article>
+          <article class="card">
             <div class="card-top"><span class="icon">⚡</span><span class="tag">Premium</span></div>
-            <h3>Calculadora eléctrica completa</h3>
-            <p>Dimensiona desde el transformador hasta conductores, tableros y protecciones con una secuencia técnica conectada.</p>
+            <h3>Cálculo industrial completo</h3>
+            <p>Dimensiona una instalación industrial desde el transformador hasta tableros, alimentadores, conductores y protecciones.</p>
             <a href="pages/calculadora.html">Abrir ficha <span>↗</span></a>
           </article>
           <article class="card">
@@ -155,8 +241,8 @@
           </article>
           <article class="card">
             <div class="card-top"><span class="icon">ΔV</span><span class="tag free">Freemium</span></div>
-            <h3>Circuitos y alimentadores</h3>
-            <p>Verifica caída de tensión, ampacidad y selección de conductores sin incluir transformador.</p>
+            <h3>Circuitos y alimentadores industriales</h3>
+            <p>Realiza el mismo flujo industrial desde el tablero: alimentadores, circuitos, conductores y protecciones, sin calcular el transformador.</p>
             <a href="pages/calculadora.html">Comenzar cálculo <span>→</span></a>
           </article>
           <article class="card">
@@ -168,7 +254,7 @@
           <article class="card">
             <div class="card-top"><span class="icon">∿</span><span class="tag">Premium</span></div>
             <h3>Armónicos y calidad de energía</h3>
-            <p>Analiza distorsión, factor de potencia y comportamiento de cargas no lineales con reportes claros.</p>
+            <p>Analiza armónicos de tensión y corriente, THD, TDD, suma de Fourier y corriente de neutro.</p>
             <a href="pages/calidad-energia.html">Abrir ficha <span>↗</span></a>
           </article>
           <article class="card">
@@ -264,6 +350,6 @@
       </div>
     </div>
   </footer>
-  <script src="assets/js/main.js?v=20260913-bfcache" defer></script>
+  <script src="assets/js/main.js?v=20260930-calculator-layout" defer></script>
 </body>
 </html>
