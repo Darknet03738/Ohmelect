@@ -304,6 +304,100 @@ function calculatePowerFactorQuick() {
   setQuickText("pfDetail", valid ? `De ${numberFormat.format(initial)} a ${numberFormat.format(target)}` : "El FP objetivo debe ser mayor que el actual.");
 }
 
+const pfUnitSets = {
+  activePower: { W: 1, kW: 1e3, MW: 1e6 },
+  apparentPower: { VA: 1, kVA: 1e3, MVA: 1e6 },
+  reactivePower: { var: 1, kVAr: 1e3, MVAr: 1e6 },
+  voltage: { V: 1, kV: 1e3 },
+  current: { A: 1, kA: 1e3 },
+  activeEnergy: { Wh: 1, kWh: 1e3, MWh: 1e6 },
+  apparentEnergy: { VAh: 1, kVAh: 1e3, MVAh: 1e6 },
+  angle: { "°": Math.PI / 180, rad: 1 },
+  resistance: { Ω: 1, kΩ: 1e3, MΩ: 1e6 },
+  frequency: { Hz: 1, kHz: 1e3 },
+  time: { µs: 1e-6, ms: 1e-3, s: 1 }
+};
+
+const pfMethods = {
+  ps: { label: "Potencia activa y aparente (P / S)", formula: "FP = P / S", fields: [["Potencia activa", "activePower", 80], ["Potencia aparente", "apparentPower", 100]], calculate: ([p, s]) => s > 0 ? p / s : NaN },
+  pq: { label: "Potencia activa y reactiva (P y Q)", formula: "FP = P / √(P² + Q²)", fields: [["Potencia activa", "activePower", 80], ["Potencia reactiva", "reactivePower", 60]], calculate: ([p, q]) => Math.hypot(p, q) > 0 ? Math.abs(p) / Math.hypot(p, q) : NaN },
+  vi: { label: "Potencia, tensión y corriente", formula: "FP = P / (k × V × I)", fields: [["Potencia activa", "activePower", 80], ["Tensión", "voltage", 220], ["Corriente", "current", 404]], calculate: ([p, v, i], system) => v > 0 && i > 0 ? p / ((system === "three" ? Math.sqrt(3) : 1) * v * i) : NaN },
+  angle: { label: "Ángulo de desfase (φ)", formula: "FP = cos(φ)", fields: [["Ángulo de fase", "angle", 36.87]], calculate: ([angle]) => Math.abs(Math.cos(angle)) },
+  impedance: { label: "Resistencia e impedancia (R / Z)", formula: "FP = R / |Z|", fields: [["Resistencia", "resistance", 8], ["Impedancia", "resistance", 10]], calculate: ([r, z]) => z > 0 ? Math.abs(r / z) : NaN },
+  timeShift: { label: "Frecuencia y desfase temporal", formula: "FP = cos(2πfΔt)", fields: [["Frecuencia", "frequency", 60], ["Desfase temporal", "time", 1.707]], calculate: ([frequency, time]) => Math.abs(Math.cos(2 * Math.PI * frequency * time)) },
+  energy: { label: "Energía activa y aparente", formula: "FP = kWh / kVAh", fields: [["Energía activa", "activeEnergy", 800], ["Energía aparente", "apparentEnergy", 1000]], calculate: ([p, s]) => s > 0 ? p / s : NaN },
+  twoWatt: { label: "Dos vatímetros (trifásico equilibrado)", formula: "tanφ = √3(W₁−W₂)/(W₁+W₂)", fields: [["Lectura W₁", "activePower", 70], ["Lectura W₂", "activePower", 30]], calculate: ([w1, w2]) => w1 + w2 !== 0 ? Math.abs(Math.cos(Math.atan(Math.sqrt(3) * (w1 - w2) / (w1 + w2)))) : NaN }
+};
+
+function renderPfAdvanced() {
+  const operation = document.getElementById("pfOperation")?.value;
+  const system = document.getElementById("pfAdvancedSystem")?.value || "single";
+  const methodSelect = document.getElementById("pfAdvancedMethod");
+  const methodField = document.getElementById("pfMethodField");
+  if (!operation || !methodSelect) return;
+  if (methodField) methodField.hidden = operation === "compensate";
+  if (operation === "calculate") {
+    const allowed = Object.entries(pfMethods).filter(([key]) => key !== "twoWatt" || system === "three");
+    const previous = methodSelect.value;
+    methodSelect.innerHTML = allowed.map(([key, method]) => `<option value="${key}">${method.label}</option>`).join("");
+    if (allowed.some(([key]) => key === previous)) methodSelect.value = previous;
+  }
+  renderPfInputs();
+}
+
+function pfInputMarkup(label, type, value, index) {
+  const units = Object.keys(pfUnitSets[type]);
+  const preferredUnits = { activePower: "kW", apparentPower: "kVA", reactivePower: "kVAr", activeEnergy: "kWh", apparentEnergy: "kVAh", voltage: "V", current: "A", angle: "°", resistance: "Ω", frequency: "Hz", time: "ms" };
+  return `<div class="field"><label for="pfAdvValue${index}">${label}</label><div class="unit-input"><input id="pfAdvValue${index}" data-pf-value="${index}" type="number" value="${value}" step="any"><select id="pfAdvUnit${index}" data-pf-unit="${index}" aria-label="Unidad de ${label}">${units.map((unit) => `<option value="${unit}"${unit === preferredUnits[type] ? " selected" : ""}>${unit}</option>`).join("")}</select></div></div>`;
+}
+
+function renderPfInputs() {
+  const container = document.getElementById("pfDynamicInputs");
+  const operation = document.getElementById("pfOperation")?.value;
+  if (!container || !operation) return;
+  if (operation === "compensate") {
+    container.innerHTML = pfInputMarkup("Potencia activa", "activePower", 100, 0)
+      + `<div class="field"><label for="pfAdvValue1">FP actual</label><input id="pfAdvValue1" data-pf-value="1" type="number" value="0.8" min="0.01" max="1" step="0.01"></div>`
+      + `<div class="field"><label for="pfAdvValue2">FP objetivo</label><input id="pfAdvValue2" data-pf-value="2" type="number" value="0.95" min="0.01" max="1" step="0.01"></div>`
+      + `<div class="field"><label for="pfCompUnit">Unidad del resultado</label><select id="pfCompUnit"><option value="var">var</option><option value="kVAr" selected>kVAr</option><option value="MVAr">MVAr</option></select></div>`;
+  } else {
+    const method = pfMethods[document.getElementById("pfAdvancedMethod")?.value] || pfMethods.ps;
+    container.innerHTML = method.fields.map((field, index) => pfInputMarkup(field[0], field[1], field[2], index)).join("");
+  }
+  calculatePfAdvanced();
+}
+
+function calculatePfAdvanced() {
+  const operation = document.getElementById("pfOperation")?.value;
+  if (!operation) return;
+  if (operation === "compensate") {
+    const powerInput = quickNumber("pfAdvValue0");
+    const powerUnit = document.getElementById("pfAdvUnit0")?.value;
+    const powerWatts = powerInput * (pfUnitSets.activePower[powerUnit] || 1);
+    const initial = quickNumber("pfAdvValue1");
+    const target = quickNumber("pfAdvValue2");
+    const outputUnit = document.getElementById("pfCompUnit")?.value || "kVAr";
+    const valid = powerWatts >= 0 && initial > 0 && initial < 1 && target > initial && target <= 1;
+    const compensation = valid ? powerWatts * (Math.tan(Math.acos(initial)) - Math.tan(Math.acos(target))) / pfUnitSets.reactivePower[outputUnit] : NaN;
+    setQuickText("pfAdvancedLabel", "Compensación requerida");
+    setQuickText("pfAdvancedResult", valid ? formatQuick(compensation, outputUnit) : "Revisa los datos");
+    setQuickText("pfAdvancedDetail", valid ? `Corrección de ${numberFormat.format(initial)} a ${numberFormat.format(target)}` : "El FP objetivo debe ser mayor que el actual.");
+    return;
+  }
+  const method = pfMethods[document.getElementById("pfAdvancedMethod")?.value] || pfMethods.ps;
+  const values = method.fields.map((field, index) => {
+    const unit = document.getElementById(`pfAdvUnit${index}`)?.value;
+    return quickNumber(`pfAdvValue${index}`) * (pfUnitSets[field[1]][unit] || 1);
+  });
+  const system = document.getElementById("pfAdvancedSystem")?.value || "single";
+  const result = method.calculate(values, system);
+  const valid = Number.isFinite(result) && result >= 0 && result <= 1;
+  const angle = valid ? Math.acos(Math.min(1, result)) * 180 / Math.PI : NaN;
+  setQuickText("pfAdvancedLabel", "Factor de potencia calculado");
+  setQuickText("pfAdvancedResult", valid ? result.toFixed(3) : "Revisa los datos");
+  setQuickText("pfAdvancedDetail", valid ? `${method.formula} · φ = ${numberFormat.format(angle)}°` : "Los datos producen un factor de potencia fuera del rango 0–1.");
+}
+
 const quickCalculationBindings = [
   [["ohmValueA", "ohmValueB", "ohmValueC"], calculateOhmQuick],
   [["powerValueA", "powerValueB", "powerPf"], calculatePowerQuick],
@@ -334,11 +428,17 @@ document.querySelectorAll("[data-ohm-target]").forEach((button) => {
 });
 document.getElementById("powerSystem")?.addEventListener("change", updatePowerFields);
 document.getElementById("powerTarget")?.addEventListener("change", updatePowerFields);
+document.getElementById("pfOperation")?.addEventListener("change", renderPfAdvanced);
+document.getElementById("pfAdvancedSystem")?.addEventListener("change", renderPfAdvanced);
+document.getElementById("pfAdvancedMethod")?.addEventListener("change", renderPfInputs);
+document.getElementById("pfDynamicInputs")?.addEventListener("input", calculatePfAdvanced);
+document.getElementById("pfDynamicInputs")?.addEventListener("change", calculatePfAdvanced);
 populateUnitsQuick();
 updateOhmSystem();
 updatePowerFields();
 calculateConductorQuick();
 calculatePowerFactorQuick();
+renderPfAdvanced();
 
 const scientificExpression = document.getElementById("scientificExpression");
 const scientificResult = document.getElementById("scientificResult");

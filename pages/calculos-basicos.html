@@ -6,7 +6,7 @@
   <meta name="description" content="Cálculos eléctricos básicos y conversores técnicos de Sparkcalc.">
   <title>Cálculos básicos - Sparkcalc</title>
   <link rel="icon" href="../assets/img/logos.jpg">
-  <link rel="stylesheet" href="../assets/css/styles.css?v=20260930-circle-v3">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20260930-tools-v5">
 </head>
 <body class="calculations-page">
   <header class="site-header">
@@ -33,15 +33,14 @@
     <section class="calc-library">
       <div class="wrap calc-library-grid">
         <article class="calc-tool-card calc-tool-wide electric-wheel-card" id="circulo-electrico">
-          <div class="calc-tool-heading"><span class="icon">Ω</span><div><div class="eyebrow">Electricidad básica · CC y CA</div><h2>Círculo de Ohm y potencia</h2></div></div>
-          <p>Selecciona en el círculo la magnitud que quieres hallar; luego escoge la fórmula según los datos disponibles.</p>
+          <div class="calc-tool-heading"><span class="icon">Ω</span><div><div class="eyebrow">Electricidad básica · CC y CA</div><h2>Mapa de Ohm y potencia</h2></div></div>
+          <p>Selecciona una magnitud en el mapa; luego escoge la fórmula según los datos disponibles.</p>
           <div class="electric-wheel-layout">
-            <div class="formula-wheel" role="group" aria-label="Seleccionar magnitud a calcular">
-              <button type="button" class="wheel-segment wheel-p" data-ohm-target="P"><strong>P</strong><span>Potencia</span><small>P = V × I<br>P = V² / R<br>P = I² × R</small></button>
-              <button type="button" class="wheel-segment wheel-v" data-ohm-target="V"><strong>V</strong><span>Tensión</span><small>V = I × R<br>V = P / I<br>V = √(P × R)</small></button>
-              <button type="button" class="wheel-segment wheel-i active" data-ohm-target="I"><strong>I</strong><span>Corriente</span><small>I = V / R<br>I = P / V<br>I = √(P / R)</small></button>
-              <button type="button" class="wheel-segment wheel-r" data-ohm-target="R"><strong>R</strong><span>Resistencia</span><small>R = V / I<br>R = V² / P<br>R = P / I²</small></button>
-              <div class="wheel-center">Ω/W<br><small>Selecciona</small></div>
+            <div class="formula-map" role="group" aria-label="Seleccionar magnitud a calcular">
+              <button type="button" class="formula-tile" data-ohm-target="P"><span class="formula-symbol">P</span><span class="formula-name">Potencia</span><small>P = V × I<br>P = V² / R<br>P = I² × R</small></button>
+              <button type="button" class="formula-tile" data-ohm-target="V"><span class="formula-symbol">V</span><span class="formula-name">Tensión</span><small>V = I × R<br>V = P / I<br>V = √(P × R)</small></button>
+              <button type="button" class="formula-tile active" data-ohm-target="I"><span class="formula-symbol">I</span><span class="formula-name">Corriente</span><small>I = V / R<br>I = P / V<br>I = √(P / R)</small></button>
+              <button type="button" class="formula-tile" data-ohm-target="R"><span class="formula-symbol">R</span><span class="formula-name">Resistencia</span><small>R = V / I<br>R = V² / P<br>R = P / I²</small></button>
             </div>
             <div class="wheel-form">
               <select id="ohmTarget" class="sr-only" aria-label="Magnitud seleccionada"><option value="V">Tensión</option><option value="I" selected>Corriente</option><option value="R">Resistencia</option><option value="P">Potencia</option></select>
@@ -81,11 +80,15 @@
         </article>
 
         <article class="calc-tool-card" id="factor-potencia">
-          <div class="calc-tool-heading"><span class="icon">cosφ</span><div><div class="eyebrow">Compensación reactiva</div><h2>Factor de potencia</h2></div></div>
-          <p>Estima el banco de capacitores necesario para alcanzar el factor de potencia objetivo.</p>
-          <div class="field"><label for="pfPower">Potencia activa (kW)</label><input id="pfPower" type="number" value="100" min="0"></div>
-          <div class="field-row quick-field"><div class="field"><label for="pfInitial">FP actual</label><input id="pfInitial" type="number" value="0.8" min="0.01" max="1" step="0.01"></div><div class="field"><label for="pfTarget">FP objetivo</label><input id="pfTarget" type="number" value="0.95" min="0.01" max="1" step="0.01"></div></div>
-          <div class="result result-stack"><span>Compensación requerida</span><strong id="pfResult">42,13 kVAr</strong><small id="pfDetail">De 0,80 a 0,95</small></div>
+          <div class="calc-tool-heading"><span class="icon">cosφ</span><div><div class="eyebrow">Análisis y compensación</div><h2>Factor de potencia</h2></div></div>
+          <p>Calcula el factor de potencia por diferentes métodos o dimensiona la compensación reactiva.</p>
+          <div class="field-row">
+            <div class="field"><label for="pfOperation">Operación</label><select id="pfOperation"><option value="calculate">Calcular factor de potencia</option><option value="compensate">Calcular compensación</option></select></div>
+            <div class="field"><label for="pfAdvancedSystem">Sistema</label><select id="pfAdvancedSystem"><option value="single">CA monofásico</option><option value="three">CA trifásico equilibrado</option></select></div>
+          </div>
+          <div class="field quick-field" id="pfMethodField"><label for="pfAdvancedMethod">Método de cálculo</label><select id="pfAdvancedMethod"></select></div>
+          <div class="pf-dynamic-inputs" id="pfDynamicInputs"></div>
+          <div class="result result-stack"><span id="pfAdvancedLabel">Factor de potencia calculado</span><strong id="pfAdvancedResult">—</strong><small id="pfAdvancedDetail">Selecciona un método e ingresa los datos.</small></div>
         </article>
       </div>
       <div class="wrap calc-warning"><strong>Importante:</strong> los resultados son orientativos. Verifica conductores, protecciones y condiciones de instalación con RETIE, NTC 2050 y la normativa aplicable.</div>
@@ -93,6 +96,6 @@
   </main>
 
   <footer><div class="wrap"><div class="foot"><div><a class="brand" href="../index.html"><span class="mark" aria-hidden="true"><img src="../assets/img/logos.jpg" alt=""></span><span>SPARKCALC</span></a><p>Herramientas digitales para diseñar con criterio, documentar con claridad y ejecutar con confianza.</p></div><div><h4>Plataforma</h4><a href="herramientas.html">Herramientas</a><a href="planes.html">Planes</a><a href="soporte.html">Centro de ayuda</a></div><div><h4>Normativa</h4><a href="normativa.html">RETIE y NTC 2050</a><a href="normativa.html#iec-ieee">IEC / IEEE</a></div><div><h4>Legal y contacto</h4><a href="legal.html">Términos de uso</a><a href="mailto:soporte@sparkcalc.co">soporte@sparkcalc.co</a></div></div><div class="legal"><span>© 2026 Sparkcalc.</span><span>Valida los resultados con un profesional competente.</span></div></div></footer>
-  <script src="../assets/js/main.js?v=20260930-circle-v3" defer></script>
+  <script src="../assets/js/main.js?v=20260930-tools-v5" defer></script>
 </body>
 </html>
