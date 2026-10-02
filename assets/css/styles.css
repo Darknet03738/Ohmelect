@@ -319,23 +319,23 @@ footer { padding: 58px 0 30px; background: #050c12; }
 .panel-note { margin-top: 20px; color: #76909f; font-size: 12px; }
 
 /* Página de cálculos básicos */
-.calculations-page { background: #071018; }
-.calc-index { position: sticky; top: 72px; z-index: 15; border-bottom: 1px solid var(--line); background: rgba(7, 16, 24, .94); backdrop-filter: blur(12px); }
+.calculations-page { background: #f4f7f9; }
+.calc-index { position: sticky; top: 72px; z-index: 15; border-bottom: 1px solid #d8e2e8; background: rgba(255, 255, 255, .96); backdrop-filter: blur(12px); }
 .calc-index .wrap { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0; scrollbar-width: thin; }
-.calc-index a { flex: 0 0 auto; padding: 7px 12px; border: 1px solid #29485b; border-radius: 20px; color: #a9bec9; font-size: 12px; font-weight: 700; }
-.calc-index a:hover { border-color: var(--blue); color: #fff; }
-.calc-library { padding: 54px 0 80px; background: #09141d; }
+.calc-index a { flex: 0 0 auto; padding: 7px 12px; border: 1px solid #c9d7df; border-radius: 20px; color: #365466; font-size: 12px; font-weight: 700; }
+.calc-index a:hover { border-color: var(--blue); color: #0879b7; background: #eef8fd; }
+.calc-library { padding: 54px 0 80px; background: #f4f7f9; }
 .calc-library-grid { display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.calc-tool-card { scroll-margin-top: 145px; padding: 28px; border: 1px solid #27465a; border-radius: 10px; background: linear-gradient(145deg, #0d1b26, #09131b); box-shadow: 0 22px 55px rgba(0, 0, 0, .22); }
+.calc-tool-card { scroll-margin-top: 145px; padding: 28px; border: 1px solid #d8e2e8; border-radius: 10px; background: #fff; color: #13232d; box-shadow: 0 18px 45px rgba(22, 44, 58, .08); }
 .calc-tool-wide { grid-column: 1 / -1; }
 .calc-tool-heading { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
 .calc-tool-heading h2 { margin: 3px 0 0; font-size: 25px; letter-spacing: -.03em; }
-.calc-tool-card > p { margin: 0 0 22px; color: #8fa6b3; font-size: 14px; }
-.calc-tool-card .field label { color: #9db2bd; }
-.calc-tool-card .field input, .calc-tool-card .field select { width: 100%; height: 43px; padding: 0 11px; border: 1px solid #315267; border-radius: 5px; background: #07131b; color: #fff; font: 15px ui-monospace, SFMono-Regular, Consolas, monospace; }
-.calc-tool-card .field-note { display: block; margin-top: 6px; color: #718a98; font-size: 11px; line-height: 1.45; }
-.converter-layout { display: grid; gap: 12px; grid-template-columns: 1.35fr repeat(3, 1fr); }
-.calc-warning { margin-top: 22px; padding: 16px 18px; border: 1px dashed #4b6070; border-radius: 7px; color: #8fa6b3; font-size: 13px; }
+.calc-tool-card > p { margin: 0 0 22px; color: #405b6b; font-size: 14px; }
+.calc-tool-card .field label { color: #425765; }
+.calc-tool-card .field input, .calc-tool-card .field select { width: 100%; height: 43px; padding: 0 11px; border: 1px solid #c9d7df; border-radius: 5px; background: #fbfdfe; color: #102431; font: 15px ui-monospace, SFMono-Regular, Consolas, monospace; }
+.calc-tool-card .field-note { display: block; margin-top: 6px; color: #607886; font-size: 11px; line-height: 1.45; }
+.converter-layout { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.calc-warning { margin-top: 22px; padding: 16px 18px; border: 1px dashed #b8cad4; border-radius: 7px; background: #fff; color: #405b6b; font-size: 13px; }
 .calc-warning strong { color: var(--amber); }
 .electric-wheel-layout { display: grid; align-items: start; gap: 34px; grid-template-columns: 1.05fr .95fr; }
 .formula-wheel { position: relative; display: grid; width: 320px; height: 320px; overflow: hidden; border: 2px solid #315d75; border-radius: 50%; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; background: #07131b; box-shadow: inset 0 0 45px rgba(39, 169, 255, .08), 0 20px 45px rgba(0, 0, 0, .25); }
@@ -354,12 +354,14 @@ footer { padding: 58px 0 30px; background: #050c12; }
 .wheel-center small { color: #8da2ae; font-size: 9px; font-weight: 500; }
 .wheel-form { display: grid; min-width: 0; gap: 12px; }
 .formula-map { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
-.formula-tile { display: grid; min-height: 145px; grid-template-columns: auto 1fr; align-content: center; gap: 2px 10px; padding: 18px; border: 1px solid #29485b; border-radius: 9px; background: #0c1c27; color: #d9e8ef; cursor: pointer; text-align: left; transition: border-color .2s, background-color .2s, transform .2s; }
-.formula-tile:hover { border-color: #4b7790; background: #102735; transform: translateY(-2px); }
-.formula-tile.active { border-color: var(--blue); background: #102c3e; box-shadow: inset 3px 0 var(--blue), 0 12px 28px rgba(0, 0, 0, .18); }
+.formula-tile { display: grid; min-height: 145px; grid-template-columns: auto 1fr; align-content: center; gap: 2px 10px; padding: 18px; border: 1px solid #d1dee5; border-radius: 9px; background: #f8fbfd; color: #173140; cursor: pointer; text-align: left; transition: border-color .2s, background-color .2s, transform .2s; }
+.formula-tile:hover { border-color: #8dc9e8; background: #f0f9fd; transform: translateY(-2px); }
+.formula-tile.active { border-color: var(--blue); background: #eaf7fd; box-shadow: inset 3px 0 var(--blue), 0 12px 28px rgba(22, 44, 58, .1); }
 .formula-symbol { grid-row: 1 / span 2; color: var(--blue); font: 800 32px/1 ui-monospace, SFMono-Regular, Consolas, monospace; }
 .formula-name { align-self: center; font-size: 13px; font-weight: 800; }
-.formula-tile small { grid-column: 1 / -1; margin-top: 10px; color: #8da5b2; font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.formula-tile small { grid-column: 1 / -1; margin-top: 10px; color: #567180; font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.calc-tool-card .result { border: 1px solid #dbe7ed; border-left: 3px solid var(--green); background: #f5fafc; color: #13232d; }
+.calc-tool-card .result span, .calc-tool-card .result-stack small { color: #607886; }
 .pf-dynamic-inputs { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; margin-top: 10px; }
 .unit-input { display: grid; grid-template-columns: 1fr auto; }
 .unit-input input { border-radius: 5px 0 0 5px !important; }

@@ -44,7 +44,8 @@ if (voltageInput && resistanceInput && currentOutput) {
   resistanceInput.addEventListener("input", calculateCurrent);
 }
 
-const numberFormat = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 2 });
+const numberFormat = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 4 });
+const scientificNumberFormat = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 12 });
 const quickNumber = (id) => Number(document.getElementById(id)?.value);
 const setQuickText = (id, value) => {
   const element = document.getElementById(id);
@@ -82,8 +83,10 @@ function calculateOhmQuick() {
   const b = quickNumber("ohmValueB");
   const c = quickNumber("ohmValueC");
   const result = method.calculate(a, b, c);
+  const resultUnit = document.getElementById("ohmResultUnit")?.value || ohmNames[target].unit;
+  const unitFactor = ohmResultUnits[target]?.[resultUnit] || 1;
   setQuickText("ohmResultLabel", `${ohmNames[target].name} calculada`);
-  setQuickText("ohmResult", Number.isFinite(result) && result >= 0 ? formatQuick(result, ohmNames[target].unit) : "Revisa los datos");
+  setQuickText("ohmResult", Number.isFinite(result) && result >= 0 ? formatQuick(result / unitFactor, resultUnit) : "Revisa los datos");
   setQuickText("ohmFormula", method.formula);
 }
 
@@ -92,6 +95,22 @@ const ohmNames = {
   R: { name: "Resistencia", unit: "Ω" }, P: { name: "Potencia", unit: "W" },
   PF: { name: "Factor de potencia", unit: "cosφ" }
 };
+
+const ohmResultUnits = {
+  V: { "µV": 1e-6, mV: 1e-3, V: 1, kV: 1e3, MV: 1e6 },
+  I: { "µA": 1e-6, mA: 1e-3, A: 1, kA: 1e3 },
+  R: { "µΩ": 1e-6, "mΩ": 1e-3, "Ω": 1, "kΩ": 1e3, "MΩ": 1e6, "GΩ": 1e9 },
+  P: { mW: 1e-3, W: 1, kW: 1e3, MW: 1e6 }
+};
+
+function populateOhmResultUnits() {
+  const target = document.getElementById("ohmTarget")?.value || "I";
+  const select = document.getElementById("ohmResultUnit");
+  if (!select) return;
+  const baseUnit = ohmNames[target].unit;
+  select.innerHTML = Object.keys(ohmResultUnits[target] || { [baseUnit]: 1 })
+    .map((unit) => `<option value="${unit}"${unit === baseUnit ? " selected" : ""}>${unit}</option>`).join("");
+}
 
 const ohmMethods = {
   V: [
@@ -139,6 +158,7 @@ function populateOhmMethods() {
   const system = document.getElementById("ohmSystem")?.value || "dc";
   const select = document.getElementById("ohmMethod");
   if (!select) return;
+  populateOhmResultUnits();
   select.innerHTML = getOhmMethods(target, system).map((method, index) => `<option value="${index}">${method.formula}</option>`).join("");
   updateOhmFields();
 }
@@ -242,6 +262,19 @@ const unitGroups = {
   time: { ms: 1e-3, s: 1, min: 60, h: 3600, día: 86400 }
 };
 
+const unitCategories = {
+  electricity: [
+    ["voltage", "Tensión"], ["current", "Corriente"], ["resistance", "Resistencia e impedancia"],
+    ["conductance", "Conductancia"], ["power", "Potencia activa"], ["reactivePower", "Potencia reactiva"],
+    ["apparentPower", "Potencia aparente"], ["energy", "Energía"], ["charge", "Carga eléctrica"],
+    ["capacitance", "Capacitancia"], ["inductance", "Inductancia"], ["frequency", "Frecuencia"]
+  ],
+  grounding: [["resistivity", "Resistividad"], ["conductivity", "Conductividad"], ["electricField", "Campo eléctrico"]],
+  lighting: [["illuminance", "Iluminancia"], ["luminousFlux", "Flujo luminoso"], ["luminousIntensity", "Intensidad luminosa"], ["luminance", "Luminancia"]],
+  mechanics: [["torque", "Par motor"], ["speed", "Velocidad angular"], ["force", "Fuerza"], ["pressure", "Presión"]],
+  general: [["length", "Longitud"], ["area", "Área"], ["volume", "Volumen"], ["mass", "Masa"], ["temperature", "Temperatura"], ["angle", "Ángulo"], ["time", "Tiempo"]]
+};
+
 function calculateUnitsQuick() {
   const quantity = document.getElementById("unitQuantity")?.value;
   const from = document.getElementById("unitFrom")?.value;
@@ -257,7 +290,7 @@ function calculateUnitsQuick() {
 }
 
 function populateUnitsQuick() {
-  const quantity = document.getElementById("unitQuantity")?.value || "power";
+  const quantity = document.getElementById("unitQuantity")?.value || "voltage";
   const units = Object.keys(unitGroups[quantity]);
   ["unitFrom", "unitTo"].forEach((id, index) => {
     const select = document.getElementById(id);
@@ -267,31 +300,13 @@ function populateUnitsQuick() {
   calculateUnitsQuick();
 }
 
-const conductorData = {
-  cu: [["14 AWG",15,8.286],["12 AWG",20,5.211],["10 AWG",30,3.277],["8 AWG",50,2.061],["6 AWG",65,1.296],["4 AWG",85,.815],["3 AWG",100,.646],["2 AWG",115,.513],["1 AWG",130,.406],["1/0 AWG",150,.322],["2/0 AWG",175,.255],["3/0 AWG",200,.202],["4/0 AWG",230,.161]],
-  al: [["12 AWG",15,8.5],["10 AWG",25,5.35],["8 AWG",40,3.36],["6 AWG",50,2.11],["4 AWG",65,1.33],["3 AWG",75,1.05],["2 AWG",90,.835],["1 AWG",100,.662],["1/0 AWG",120,.525],["2/0 AWG",135,.416],["3/0 AWG",155,.33],["4/0 AWG",180,.261]]
-};
-
-function calculateConductorQuick() {
-  const current = quickNumber("conductorCurrent");
-  const length = quickNumber("conductorLength");
-  const voltage = quickNumber("conductorVoltage");
-  const material = document.getElementById("conductorMaterial")?.value || "cu";
-  const factor = document.getElementById("conductorSystem")?.value === "three" ? Math.sqrt(3) : 2;
-  if (!(current > 0 && length >= 0 && voltage > 0)) {
-    setQuickText("conductorResult", "Revisa los datos");
-    setQuickText("conductorDetail", "Ingresa valores válidos.");
-    return;
-  }
-  const selected = conductorData[material].find((item) => item[1] >= current * 1.25 && factor * current * item[2] * length / 1000 / voltage * 100 <= 3);
-  if (!selected) {
-    setQuickText("conductorResult", "Superior a 4/0 AWG");
-    setQuickText("conductorDetail", "La tabla rápida no cubre esta condición.");
-    return;
-  }
-  const drop = factor * current * selected[2] * length / 1000 / voltage * 100;
-  setQuickText("conductorResult", `${selected[0]} ${material === "cu" ? "Cu" : "Al"}`);
-  setQuickText("conductorDetail", `Ampacidad ${selected[1]} A · ΔV ${numberFormat.format(drop)}%`);
+function populateUnitQuantities() {
+  const category = document.getElementById("unitCategory")?.value || "electricity";
+  const quantitySelect = document.getElementById("unitQuantity");
+  if (!quantitySelect) return;
+  quantitySelect.innerHTML = (unitCategories[category] || unitCategories.electricity)
+    .map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
+  populateUnitsQuick();
 }
 
 function calculatePowerFactorQuick() {
@@ -394,7 +409,7 @@ function calculatePfAdvanced() {
   const valid = Number.isFinite(result) && result >= 0 && result <= 1;
   const angle = valid ? Math.acos(Math.min(1, result)) * 180 / Math.PI : NaN;
   setQuickText("pfAdvancedLabel", "Factor de potencia calculado");
-  setQuickText("pfAdvancedResult", valid ? result.toFixed(3) : "Revisa los datos");
+  setQuickText("pfAdvancedResult", valid ? numberFormat.format(result) : "Revisa los datos");
   setQuickText("pfAdvancedDetail", valid ? `${method.formula} · φ = ${numberFormat.format(angle)}°` : "Los datos producen un factor de potencia fuera del rango 0–1.");
 }
 
@@ -402,7 +417,6 @@ const quickCalculationBindings = [
   [["ohmValueA", "ohmValueB", "ohmValueC"], calculateOhmQuick],
   [["powerValueA", "powerValueB", "powerPf"], calculatePowerQuick],
   [["unitValue", "unitFrom", "unitTo"], calculateUnitsQuick],
-  [["conductorCurrent", "conductorLength", "conductorVoltage", "conductorMaterial", "conductorSystem"], calculateConductorQuick],
   [["pfPower", "pfInitial", "pfTarget"], calculatePowerFactorQuick]
 ];
 
@@ -413,9 +427,11 @@ quickCalculationBindings.forEach(([ids, calculation]) => ids.forEach((id) => {
 }));
 
 document.getElementById("unitQuantity")?.addEventListener("change", populateUnitsQuick);
+document.getElementById("unitCategory")?.addEventListener("change", populateUnitQuantities);
 document.getElementById("ohmTarget")?.addEventListener("change", populateOhmMethods);
 document.getElementById("ohmSystem")?.addEventListener("change", updateOhmSystem);
 document.getElementById("ohmMethod")?.addEventListener("change", updateOhmFields);
+document.getElementById("ohmResultUnit")?.addEventListener("change", calculateOhmQuick);
 document.querySelectorAll("[data-ohm-target]").forEach((button) => {
   button.addEventListener("click", () => {
     const target = button.dataset.ohmTarget;
@@ -433,10 +449,9 @@ document.getElementById("pfAdvancedSystem")?.addEventListener("change", renderPf
 document.getElementById("pfAdvancedMethod")?.addEventListener("change", renderPfInputs);
 document.getElementById("pfDynamicInputs")?.addEventListener("input", calculatePfAdvanced);
 document.getElementById("pfDynamicInputs")?.addEventListener("change", calculatePfAdvanced);
-populateUnitsQuick();
+populateUnitQuantities();
 updateOhmSystem();
 updatePowerFields();
-calculateConductorQuick();
 calculatePowerFactorQuick();
 renderPfAdvanced();
 
@@ -476,7 +491,7 @@ function evaluateScientific() {
       Math.PI,
       Math.E
     );
-    scientificResult.textContent = Number.isFinite(value) ? numberFormat.format(Number(value.toPrecision(12))) : "Resultado no definido";
+    scientificResult.textContent = Number.isFinite(value) ? scientificNumberFormat.format(Number(value.toPrecision(15))) : "Resultado no definido";
   } catch {
     scientificResult.textContent = "Expresión incompleta";
   }

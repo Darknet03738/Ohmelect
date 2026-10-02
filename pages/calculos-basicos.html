@@ -6,7 +6,7 @@
   <meta name="description" content="Cálculos eléctricos básicos y conversores técnicos de Sparkcalc.">
   <title>Cálculos básicos - Sparkcalc</title>
   <link rel="icon" href="../assets/img/logos.jpg">
-  <link rel="stylesheet" href="../assets/css/styles.css?v=20260930-tools-v5">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=20261001-light-tools">
 </head>
 <body class="calculations-page">
   <header class="site-header">
@@ -16,6 +16,37 @@
       <div class="actions"><a class="btn" href="login.html">Iniciar sesión</a><a class="btn primary" href="registro.html">Registrarse</a></div>
     </div>
   </header>
+
+  <button class="quick-trigger" id="quickOpen" type="button" aria-controls="quickPanel" aria-expanded="false">
+    <span class="bolt" aria-hidden="true">ϟ</span><span class="label">Calculadora</span>
+  </button>
+  <div class="quick-backdrop" id="quickBackdrop"></div>
+  <aside class="quick-panel" id="quickPanel" aria-hidden="true" aria-label="Calculadora científica">
+    <div class="quick-head">
+      <div><div class="eyebrow">Disponible en todo momento</div><h2>Calculadora científica</h2><p>Resuelve expresiones sin salir de la página.</p></div>
+      <button class="close" id="quickClose" type="button" aria-label="Cerrar panel">×</button>
+    </div>
+    <div class="mini-calc quick-calc active" data-calc-panel="scientific">
+      <div class="scientific-head">
+        <div><h3>Calculadora científica</h3><p>Escribe una expresión o utiliza el teclado.</p></div>
+        <button class="angle-mode" id="angleMode" type="button" aria-label="Cambiar unidad angular">DEG</button>
+      </div>
+      <label class="sr-only" for="scientificExpression">Expresión matemática</label>
+      <input class="scientific-display" id="scientificExpression" type="text" placeholder="Ejemplo: sin(30) + sqrt(16)" autocomplete="off" spellcheck="false">
+      <output class="scientific-result" id="scientificResult" for="scientificExpression" aria-live="polite">0</output>
+      <div class="scientific-keys" aria-label="Teclado de calculadora científica">
+        <button type="button" data-sci-action="clear" class="key-action">AC</button><button type="button" data-sci-action="backspace" class="key-action" aria-label="Borrar último carácter">⌫</button><button type="button" data-sci-value="(">(</button><button type="button" data-sci-value=")">)</button>
+        <button type="button" data-sci-value="sin(">sin</button><button type="button" data-sci-value="cos(">cos</button><button type="button" data-sci-value="tan(">tan</button><button type="button" data-sci-value="sqrt(">√</button>
+        <button type="button" data-sci-value="asin(">sin⁻¹</button><button type="button" data-sci-value="acos(">cos⁻¹</button><button type="button" data-sci-value="atan(">tan⁻¹</button><button type="button" data-sci-value="abs(">|x|</button>
+        <button type="button" data-sci-value="log(">log</button><button type="button" data-sci-value="ln(">ln</button><button type="button" data-sci-value="pi">π</button><button type="button" data-sci-value="^">xʸ</button>
+        <button type="button" data-sci-value="7">7</button><button type="button" data-sci-value="8">8</button><button type="button" data-sci-value="9">9</button><button type="button" data-sci-value="/">÷</button>
+        <button type="button" data-sci-value="4">4</button><button type="button" data-sci-value="5">5</button><button type="button" data-sci-value="6">6</button><button type="button" data-sci-value="*">×</button>
+        <button type="button" data-sci-value="1">1</button><button type="button" data-sci-value="2">2</button><button type="button" data-sci-value="3">3</button><button type="button" data-sci-value="-">−</button>
+        <button type="button" data-sci-value="0">0</button><button type="button" data-sci-value=".">.</button><button type="button" data-sci-action="calculate" class="key-equals">=</button><button type="button" data-sci-value="+">+</button>
+      </div>
+      <p class="scientific-help">Funciones: sin, cos, tan, asin, acos, atan, sqrt, log, ln y abs. Constantes: pi y e.</p>
+    </div>
+  </aside>
 
   <main>
     <section class="page-hero">
@@ -27,7 +58,7 @@
     </section>
 
     <nav class="calc-index" aria-label="Índice de calculadoras">
-      <div class="wrap"><a href="#circulo-electrico">Ohm y potencia</a><a href="#unidades">Unidades</a><a href="#conductores">Conductores</a><a href="#factor-potencia">Factor de potencia</a></div>
+      <div class="wrap"><a href="#circulo-electrico">Ohm y potencia</a><a href="#unidades">Unidades</a><a href="#factor-potencia">Factor de potencia</a></div>
     </nav>
 
     <section class="calc-library">
@@ -48,6 +79,7 @@
               <div class="field"><label for="ohmMethod">Fórmula y datos conocidos</label><select id="ohmMethod"></select></div>
               <div class="field-row quick-field"><div class="field"><label id="ohmLabelA" for="ohmValueA">Tensión (V)</label><input id="ohmValueA" type="number" value="120"></div><div class="field"><label id="ohmLabelB" for="ohmValueB">Resistencia (Ω)</label><input id="ohmValueB" type="number" value="24"></div></div>
               <div class="field quick-field" id="ohmFieldC" hidden><label id="ohmLabelC" for="ohmValueC">Factor de potencia</label><input id="ohmValueC" type="number" value="0.9" step="0.01"></div>
+              <div class="field quick-field"><label for="ohmResultUnit">Unidad del resultado</label><select id="ohmResultUnit"></select></div>
               <div class="result result-stack"><span id="ohmResultLabel">Corriente calculada</span><strong id="ohmResult">5 A</strong><small id="ohmFormula">I = V / R</small></div>
             </div>
           </div>
@@ -57,13 +89,8 @@
           <div class="calc-tool-heading"><span class="icon">⇄</span><div><div class="eyebrow">Electricidad e ingeniería</div><h2>Conversor de unidades</h2></div></div>
           <p>Convierte magnitudes eléctricas, de puesta a tierra, iluminación, motores, mecánica e ingeniería general.</p>
           <div class="converter-layout">
-            <div class="field"><label for="unitQuantity">Magnitud</label><select id="unitQuantity">
-              <optgroup label="Electricidad"><option value="voltage">Tensión</option><option value="current">Corriente</option><option value="resistance">Resistencia e impedancia</option><option value="conductance">Conductancia</option><option value="power">Potencia activa</option><option value="reactivePower">Potencia reactiva</option><option value="apparentPower">Potencia aparente</option><option value="energy">Energía</option><option value="charge">Carga eléctrica</option><option value="capacitance">Capacitancia</option><option value="inductance">Inductancia</option><option value="frequency">Frecuencia</option></optgroup>
-              <optgroup label="Puesta a tierra"><option value="resistivity">Resistividad</option><option value="conductivity">Conductividad</option><option value="electricField">Campo eléctrico</option></optgroup>
-              <optgroup label="Iluminación"><option value="illuminance">Iluminancia</option><option value="luminousFlux">Flujo luminoso</option><option value="luminousIntensity">Intensidad luminosa</option><option value="luminance">Luminancia</option></optgroup>
-              <optgroup label="Motores y mecánica"><option value="torque">Par motor</option><option value="speed">Velocidad angular</option><option value="force">Fuerza</option><option value="pressure">Presión</option></optgroup>
-              <optgroup label="Ingeniería general"><option value="length">Longitud</option><option value="area">Área</option><option value="volume">Volumen</option><option value="mass">Masa</option><option value="temperature">Temperatura</option><option value="angle">Ángulo</option><option value="time">Tiempo</option></optgroup>
-            </select></div>
+            <div class="field"><label for="unitCategory">Categoría</label><select id="unitCategory"><option value="electricity">Electricidad</option><option value="grounding">Puesta a tierra</option><option value="lighting">Iluminación</option><option value="mechanics">Motores y mecánica</option><option value="general">Ingeniería general</option></select></div>
+            <div class="field"><label for="unitQuantity">Magnitud</label><select id="unitQuantity"></select></div>
             <div class="field"><label for="unitValue">Valor</label><input id="unitValue" type="number" value="1"></div>
             <div class="field"><label for="unitFrom">Desde</label><select id="unitFrom"></select></div>
             <div class="field"><label for="unitTo">Convertir a</label><select id="unitTo"></select></div>
@@ -71,15 +98,7 @@
           <div class="result"><span>Resultado</span><strong id="unitResult">1.000 mV</strong></div>
         </article>
 
-        <article class="calc-tool-card" id="conductores">
-          <div class="calc-tool-heading"><span class="icon">▤</span><div><div class="eyebrow">Estimación preliminar</div><h2>Conductores</h2></div></div>
-          <p>Estima el calibre mínimo por ampacidad y una caída de tensión máxima del 3%.</p>
-          <div class="field-row"><div class="field"><label for="conductorCurrent">Corriente (A)</label><input id="conductorCurrent" type="number" value="40" min="0"></div><div class="field"><label for="conductorLength">Longitud (m)</label><input id="conductorLength" type="number" value="30" min="0"></div><div class="field"><label for="conductorVoltage">Tensión (V)</label><input id="conductorVoltage" type="number" value="220" min="1"></div><div class="field"><label for="conductorMaterial">Material</label><select id="conductorMaterial"><option value="cu">Cobre</option><option value="al">Aluminio</option></select></div></div>
-          <div class="field quick-field"><label for="conductorSystem">Sistema</label><select id="conductorSystem"><option value="single">Monofásico</option><option value="three">Trifásico</option></select></div>
-          <div class="result result-stack"><span>Calibre mínimo estimado</span><strong id="conductorResult">8 AWG Cu</strong><small id="conductorDetail">Ampacidad 50 A · ΔV 1,12%</small></div>
-        </article>
-
-        <article class="calc-tool-card" id="factor-potencia">
+        <article class="calc-tool-card calc-tool-wide" id="factor-potencia">
           <div class="calc-tool-heading"><span class="icon">cosφ</span><div><div class="eyebrow">Análisis y compensación</div><h2>Factor de potencia</h2></div></div>
           <p>Calcula el factor de potencia por diferentes métodos o dimensiona la compensación reactiva.</p>
           <div class="field-row">
@@ -91,11 +110,11 @@
           <div class="result result-stack"><span id="pfAdvancedLabel">Factor de potencia calculado</span><strong id="pfAdvancedResult">—</strong><small id="pfAdvancedDetail">Selecciona un método e ingresa los datos.</small></div>
         </article>
       </div>
-      <div class="wrap calc-warning"><strong>Importante:</strong> los resultados son orientativos. Verifica conductores, protecciones y condiciones de instalación con RETIE, NTC 2050 y la normativa aplicable.</div>
+      <div class="wrap calc-warning"><strong>Importante:</strong> los resultados son orientativos. Verifica las condiciones de diseño con RETIE, NTC 2050 y la normativa aplicable.</div>
     </section>
   </main>
 
   <footer><div class="wrap"><div class="foot"><div><a class="brand" href="../index.html"><span class="mark" aria-hidden="true"><img src="../assets/img/logos.jpg" alt=""></span><span>SPARKCALC</span></a><p>Herramientas digitales para diseñar con criterio, documentar con claridad y ejecutar con confianza.</p></div><div><h4>Plataforma</h4><a href="herramientas.html">Herramientas</a><a href="planes.html">Planes</a><a href="soporte.html">Centro de ayuda</a></div><div><h4>Normativa</h4><a href="normativa.html">RETIE y NTC 2050</a><a href="normativa.html#iec-ieee">IEC / IEEE</a></div><div><h4>Legal y contacto</h4><a href="legal.html">Términos de uso</a><a href="mailto:soporte@sparkcalc.co">soporte@sparkcalc.co</a></div></div><div class="legal"><span>© 2026 Sparkcalc.</span><span>Valida los resultados con un profesional competente.</span></div></div></footer>
-  <script src="../assets/js/main.js?v=20260930-tools-v5" defer></script>
+  <script src="../assets/js/main.js?v=20261001-result-precision" defer></script>
 </body>
 </html>

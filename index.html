@@ -6,7 +6,7 @@
   <meta name="description" content="Cálculo, análisis y gestión de proyectos eléctricos en una sola plataforma.">
   <title>Sparkcalc - Ingeniería eléctrica conectada</title>
   <link rel="icon" href="assets/img/logos.jpg">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260930-calculator-layout">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261001-units-redesign">
 </head>
 <body>
   <header class="site-header">
@@ -48,7 +48,6 @@
       <button class="quick-link active" type="button" data-calc="ohm" aria-pressed="true">Ω Ley de Ohm</button>
       <button class="quick-link" type="button" data-calc="power" aria-pressed="false">W Ley de Potencia</button>
       <button class="quick-link" type="button" data-calc="units" aria-pressed="false">⇄ Convertir unidades</button>
-      <button class="quick-link" type="button" data-calc="conductors" aria-pressed="false">▤ Conductores</button>
       <button class="quick-link" type="button" data-calc="power-factor" aria-pressed="false">cosφ Factor de potencia</button>
       <button class="quick-link" type="button" data-calc="scientific" aria-pressed="false">ƒ(x) Científica</button>
     </div>
@@ -85,13 +84,10 @@
     <div class="mini-calc quick-calc" data-calc-panel="units" hidden>
       <h3>Convertir unidades</h3>
       <p>Convierte magnitudes eléctricas entre sus unidades más usadas.</p>
-      <div class="field"><label for="unitQuantity">Magnitud</label><select id="unitQuantity">
-        <optgroup label="Electricidad"><option value="voltage">Tensión</option><option value="current">Corriente</option><option value="resistance">Resistencia e impedancia</option><option value="conductance">Conductancia</option><option value="power">Potencia activa</option><option value="reactivePower">Potencia reactiva</option><option value="apparentPower">Potencia aparente</option><option value="energy">Energía</option><option value="charge">Carga eléctrica</option><option value="capacitance">Capacitancia</option><option value="inductance">Inductancia</option><option value="frequency">Frecuencia</option></optgroup>
-        <optgroup label="Puesta a tierra"><option value="resistivity">Resistividad</option><option value="conductivity">Conductividad</option><option value="electricField">Campo eléctrico</option></optgroup>
-        <optgroup label="Iluminación"><option value="illuminance">Iluminancia</option><option value="luminousFlux">Flujo luminoso</option><option value="luminousIntensity">Intensidad luminosa</option><option value="luminance">Luminancia</option></optgroup>
-        <optgroup label="Motores y mecánica"><option value="torque">Par motor</option><option value="speed">Velocidad angular</option><option value="force">Fuerza</option><option value="pressure">Presión</option></optgroup>
-        <optgroup label="Ingeniería general"><option value="length">Longitud</option><option value="area">Área</option><option value="volume">Volumen</option><option value="mass">Masa</option><option value="temperature">Temperatura</option><option value="angle">Ángulo</option><option value="time">Tiempo</option></optgroup>
-      </select></div>
+      <div class="field-row">
+        <div class="field"><label for="unitCategory">Categoría</label><select id="unitCategory"><option value="electricity">Electricidad</option><option value="grounding">Puesta a tierra</option><option value="lighting">Iluminación</option><option value="mechanics">Motores y mecánica</option><option value="general">Ingeniería general</option></select></div>
+        <div class="field"><label for="unitQuantity">Magnitud</label><select id="unitQuantity"></select></div>
+      </div>
       <div class="field-row quick-field">
         <div class="field"><label for="unitValue">Valor</label><input id="unitValue" type="number" value="1" inputmode="decimal"></div>
         <div class="field"><label for="unitFrom">Desde</label><select id="unitFrom"></select></div>
@@ -100,18 +96,6 @@
       <div class="result"><span>Resultado</span><strong id="unitResult">1.000 W</strong></div>
     </div>
 
-    <div class="mini-calc quick-calc" data-calc-panel="conductors" hidden>
-      <h3>Selección preliminar de conductor</h3>
-      <p>Estima calibre por ampacidad y caída de tensión máxima del 3%.</p>
-      <div class="field-row">
-        <div class="field"><label for="conductorCurrent">Corriente (A)</label><input id="conductorCurrent" type="number" value="40" min="0"></div>
-        <div class="field"><label for="conductorLength">Longitud (m)</label><input id="conductorLength" type="number" value="30" min="0"></div>
-        <div class="field"><label for="conductorVoltage">Tensión (V)</label><input id="conductorVoltage" type="number" value="220" min="1"></div>
-        <div class="field"><label for="conductorMaterial">Material</label><select id="conductorMaterial"><option value="cu">Cobre</option><option value="al">Aluminio</option></select></div>
-      </div>
-      <div class="field quick-field"><label for="conductorSystem">Sistema</label><select id="conductorSystem"><option value="single">Monofásico</option><option value="three">Trifásico</option></select></div>
-      <div class="result result-stack"><span>Calibre mínimo estimado</span><strong id="conductorResult">8 AWG Cu</strong><small id="conductorDetail">Ampacidad 50 A · ΔV 1,12%</small></div>
-    </div>
 
     <div class="mini-calc quick-calc" data-calc-panel="power-factor" hidden>
       <h3>Corrección del factor de potencia</h3>
@@ -218,13 +202,13 @@
         </div>
         <div class="tools-note">
           <b>ϟ Acceso global:</b>
-          abre "Cálculos rápidos" desde cualquier pantalla para usar Ley de Ohm, potencia, conversiones, conductores y más.
+          abre "Cálculos rápidos" desde cualquier pantalla para usar Ley de Ohm, potencia, conversiones y más.
         </div>
         <div class="grid">
           <article class="card">
             <div class="card-top"><span class="icon">Ω</span><span class="tag free">Gratis</span></div>
             <h3>Cálculos básicos y conversiones</h3>
-            <p>Ley de Ohm, potencia CC/CA, conductores, factor de potencia y conversión de unidades técnicas.</p>
+            <p>Ley de Ohm, potencia CC/CA, factor de potencia y conversión de unidades técnicas.</p>
             <a href="pages/calculos-basicos.html">Abrir herramientas <span>→</span></a>
           </article>
           <article class="card">
@@ -350,6 +334,6 @@
       </div>
     </div>
   </footer>
-  <script src="assets/js/main.js?v=20260930-calculator-layout" defer></script>
+  <script src="assets/js/main.js?v=20261001-result-precision" defer></script>
 </body>
 </html>
