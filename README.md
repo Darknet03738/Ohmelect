@@ -1,4 +1,4 @@
-# Sparkcalc
+# El Ohmelect de Inductancio
 
 Landing page para una plataforma de cálculo, análisis y gestión de proyectos eléctricos.
 
@@ -7,7 +7,6 @@ Landing page para una plataforma de cálculo, análisis y gestión de proyectos 
 ```text
 .
 ├── index.html
-├── sparkcalc.html
 ├── pages
 │   ├── calculadora.html
 │   ├── calidad-energia.html
